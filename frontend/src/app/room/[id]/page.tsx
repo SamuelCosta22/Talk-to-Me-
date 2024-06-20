@@ -8,6 +8,9 @@ import { useContext, useEffect, useRef } from "react";
 
 export default function Room({params}: {params: {id: string}}){
     const { socket } = useContext(SocketContext);
+
+    const localStreem = useRef<HTMLVideoElement>(null);
+
     useEffect(() => {
       socket?.on('connect', async () => {
         console.log('conectado');
@@ -15,8 +18,22 @@ export default function Room({params}: {params: {id: string}}){
           roomId: params.id,
           socketId: socket.id,
         });
+        await initCamera();
       });
     }, [socket]);
+
+    const initCamera = async() => {
+        const video = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: {
+                noiseSuppression: true,
+                echoCancellation: true,
+            }
+        });
+        if(localStreem.current){
+            localStreem.current.srcObject = video;
+        }
+    }
     
     return(
         <div className="h-screen">
@@ -25,7 +42,7 @@ export default function Room({params}: {params: {id: string}}){
                 <div className="md:w-[85%] w-full m-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="bg-gray-950 w-full rounded-md h-full p-2 relative ">
-                            <video className="h-full w-full"></video>
+                            <video className="h-full w-full" autoPlay ref={localStreem} />
                             <span className="absolute bottom-3">Alexia Kattah</span>
                         </div>
                         <div className="bg-gray-950 w-full rounded-md h-full p-2 relative ">
