@@ -27,7 +27,7 @@ export default function Chat({ roomId }: { roomId: string }) {
     if (currentMsg.current && currentMsg.current?.value !== '') {
       const sendMsgToServer = {
         message: currentMsg.current.value,
-        username: 'Alexia Kattah',
+        username: 'Samuel Costa',
         roomId,
         time: new Date().toLocaleTimeString(),
       };
